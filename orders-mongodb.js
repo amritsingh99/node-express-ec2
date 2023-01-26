@@ -19,8 +19,7 @@ const db = () => {
     return client.db(process.env.MONGO_DBNAME);
 }
 
-export class MongoDBOrdersStore {
-
+export default class MongoDBOrdersStore {
     async updateDates() {
         await connectDB();
         const collection = await this.#returnCollection();
@@ -42,11 +41,19 @@ export class MongoDBOrdersStore {
     async read(key) {
         await connectDB()
         const collection = await this.#returnCollection();
-        const doc = await collection.findOne({SNo : "1"})
+        const doc = await collection.find().limit(1).toArray()
         return doc
+    }
+
+    async readAll() {
+        await connectDB()
+        const collection = await this.#returnCollection();
+        const projection = {_id : 0 };
+        const doc = await collection.find().limit(10).project(projection).toArray()
+        return doc        
     }
 }
 
-const orders = new MongoDBOrdersStore();
-const data = await orders.read(1);
-console.log(data);
+// const orders = new MongoDBOrdersStore();
+// const data = await orders.read(1);
+// console.log(data);
