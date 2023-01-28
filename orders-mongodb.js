@@ -50,7 +50,13 @@ export default class MongoDBOrdersStore {
         const collection = await this.#returnCollection();
         const projection = {_id : 0 };
         const doc = await collection.find().limit(10).project(projection).toArray()
-        return doc        
+        // var data;
+        const data = doc.map((element, idx) => {
+            const obj = [element.Job_Date, element.Fname, element.Pick, element.Repeat, element.Client]
+            return obj
+        })
+        // console.log(data)
+        return data
     }
 }
 
