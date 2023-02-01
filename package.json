@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "server" : "cross-env DEBUG=orders:* nodemon server",
+    "server": "cross-env DEBUG=orders:* nodemon server",
     "mongodb-start": "cross-env DEBUG=orders:* nodemon orders-mongodb"
   },
   "keywords": [],
@@ -12,6 +12,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "dateformat": "^5.0.3",
     "debug": "^4.3.4",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
