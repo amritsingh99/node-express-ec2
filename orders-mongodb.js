@@ -43,19 +43,19 @@ export default class MongoDBOrdersStore {
         client = undefined
     }
 
-    async read(key) {
-        await connectDB()
-        const collection = await this.#returnCollection();
-        const doc = await collection.find().limit(1).toArray()
-        return doc
-    }
+    // async read(key) {
+    //     await connectDB()
+    //     const collection = await this.#returnCollection();
+    //     const doc = await collection.find().limit(1).toArray()
+    //     return doc
+    // }
 
-    async readAll(date) {
+    async readAll(date, limitNum) {
         await connectDB()
         const collection = await this.#returnCollection();
         const headers = ['Fname', 'Pick', 'Repeat', 'Client']
         if (date == undefined) {
-            const data = await processData(collection, headers);
+            const data = await processData(collection, headers, limitNum);
             return data
         }
         
@@ -95,38 +95,28 @@ export default class MongoDBOrdersStore {
         // console.log(data);
     }
 
-    // async readAll(date) {
-    //     console.log(date);
-    //     // console.log('Amrit');
-    //     await connectDB()
-    //     const collection = await this.#returnCollection()
-    //     const pipeline = [
-    //         {
-    //             $match : {Job_Date : date}
-    //         }
-    //     ]
-    //     const headers = ['Fname', 'Pick', 'Repeat', 'Client']
-    //     const data = await collection.aggregate(pipeline).toArray()
-    //     const transformedDocs = transformData(data)
-    //     const docs = mapDocs(transformedDocs, headers)
-    //     console.log(docs);
-    //     return docs
-    //     console.log(data);
-    //     // const mappedData = mapDocs(data, headers)
-    //     console.log(mappedData);
-    //     // const data = await collection.find().toArray()
-    //     // console.log(data);
-    //     return mappedData
-    // }
-    // async fetchLatestFiveRecords() {
 
-    // }
+    async read(client) {
+        client = client.toLowerCase()
+        await connectDB()
+        const collection = await this.#returnCollection()
+        const data = await collection.aggregate([
+            {
+                $match : { "Client" :  "RC Labels"}
+            }
+        ]).toArray()
+        const transformedDocs = transformData(data)
+        const headers = ['Fname', 'Pick', 'Repeat', 'Client']
+        const docs = mapDocs(transformedDocs, headers)          
+        return docs
+    }
+
+    async getClients() {
+        await connectDB()
+        const collection = await this.#returnCollection()        
+        const data = await collection.distinct("Client")
+        // console.log(data);
+        return data
+    }
+
 }
-
-// const orders = new MongoDBOrdersStore();
-// const data = await orders.read(1);
-// console.log(data);
-
-// db.P_IDENTIFICATION.aggregate([{
-//     $match : {Job_Date : '30122023'}
-// }])
